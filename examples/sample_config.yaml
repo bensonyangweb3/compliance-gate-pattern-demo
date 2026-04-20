@@ -1,0 +1,34 @@
+# Sample compliance-gate configuration.
+#
+# This file illustrates the shape of the `context` dict passed to rules.
+# In a real deployment the watchlist / conflicts / prior-contact data
+# would be sourced from live systems (Chainalysis, TRM, OFAC feeds,
+# internal CRM). Here everything is synthetic.
+
+cooldown_days: 30
+
+# People we should NEVER outreach — internal team, existing customers,
+# prior partners, etc. Handles are normalized by the rule engine, so
+# "@alice01", "alice_01", "ALICE 01" all collide.
+internal_conflicts:
+  - "@pionex_internal_bd"
+  - "alice_teammate"
+  - "support@ourcompany.com"
+
+# Sanctions / adverse-media / internal block list.
+# In a real deployment: pull from Chainalysis Sanctions API + OFAC SDN.
+watchlist:
+  - "@blocked_entity_example"
+  - "sanctioned.person@example.invalid"
+
+# Known-alias map: "display name" -> canonical handle.
+# Used for the fuzzy-match escalate path.
+known_aliases:
+  "Alice Chen (existing partner)": "@alice_chen_bd"
+  "Bob K. (prior contact, Q3 2025)": "@bobk_trading"
+
+# Prior-contact log: handle -> days since last outreach.
+# Anything under `cooldown_days` gets rejected.
+prior_contacts_days_ago:
+  "@recent_prospect": 7
+  "@older_prospect": 95
