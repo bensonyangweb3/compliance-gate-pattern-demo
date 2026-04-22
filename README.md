@@ -148,4 +148,4 @@ Built by Shih-Hsiang (Benson) Yang as part of a broader exploration
 of compliance-first architecture in LLM-augmented BD workflows.
 
 - LinkedIn: https://www.linkedin.com/in/benson-yang-web3/
-- Email: h3795592@gmail.com
+- Email: h3795592 [at] gmail [dot] com

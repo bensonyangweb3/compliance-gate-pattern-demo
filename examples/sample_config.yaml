@@ -11,7 +11,7 @@ cooldown_days: 30
 # prior partners, etc. Handles are normalized by the rule engine, so
 # "@alice01", "alice_01", "ALICE 01" all collide.
 internal_conflicts:
-  - "@pionex_internal_bd"
+  - "@acme_internal_bd"
   - "alice_teammate"
   - "support@ourcompany.com"
 
