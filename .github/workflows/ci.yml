@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    name: test (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run unit tests
+        run: python -m pytest tests/ -v
+
+      - name: Run example (smoke test)
+        run: python -m examples.example_run
+
+      - name: Run LLM example in mock mode (smoke test)
+        run: python -m examples.with_llm_generation --provider mock
+
+      - name: Run eval suite (strict)
+        run: python -m evals.run_eval
+
+      - name: Regenerate eval RESULTS.md and check it is up-to-date
+        run: |
+          python -m evals.run_eval --format markdown --no-strict > /tmp/RESULTS.new.md
+          diff -u evals/RESULTS.md /tmp/RESULTS.new.md
