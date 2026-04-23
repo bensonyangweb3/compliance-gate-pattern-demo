@@ -1,2 +1,8 @@
 jsonschema>=4.0.0
 PyYAML>=6.0
+# Optional — only needed when running examples/with_llm_generation.py
+# with --provider anthropic. Kept in the base requirements so the demo
+# stays one-command-installable.
+anthropic>=0.40.0
+jsonschema>=4.0.0
+PyYAML>=6.0
