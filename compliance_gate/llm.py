@@ -1,5 +1,3 @@
-TEST LINE ONE
-TEST LINE TWO
 """LLM provider interface + a mock provider for offline runs.
 
 The gate layer knows nothing about LLMs. The *generation* layer does,
