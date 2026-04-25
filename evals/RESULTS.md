@@ -1,6 +1,6 @@
 # Eval Results
 
-- **Total cases:** 31  
+- **Total cases:** 45  
 - **Accuracy:** 100.0%  
 - **Audit completeness:** 100.0%
 
@@ -8,22 +8,23 @@
 
 | Class | Precision | Recall | Support |
 |---|---:|---:|---:|
-| PASS | 100.0% | 100.0% | 17 |
-| REJECT | 100.0% | 100.0% | 11 |
-| ESCALATE | 100.0% | 100.0% | 3 |
+| PASS | 100.0% | 100.0% | 25 |
+| REJECT | 100.0% | 100.0% | 16 |
+| ESCALATE | 100.0% | 100.0% | 4 |
 
 ## Confusion matrix
 
 | expected \ actual | PASS | REJECT | ESCALATE |
 |---|---:|---:|---:|
-| **PASS** | 17 | 0 | 0 |
-| **REJECT** | 0 | 11 | 0 |
-| **ESCALATE** | 0 | 0 | 3 |
+| **PASS** | 25 | 0 | 0 |
+| **REJECT** | 0 | 16 | 0 |
+| **ESCALATE** | 0 | 0 | 4 |
 
 ## Case breakdown by category
 
 | Category | Cases | Correct |
 |---|---:|---:|
+| adversarial | 14 | 14 |
 | alias | 3 | 3 |
 | conflict | 4 | 4 |
 | cooldown | 3 | 3 |

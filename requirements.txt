@@ -1,6 +1,9 @@
 jsonschema>=4.0.0
 PyYAML>=6.0
-# Optional — only needed when running examples/with_llm_generation.py
-# with --provider anthropic. Kept in the base requirements so the demo
-# stays one-command-installable.
+# --- LLM SDKs (all optional) -------------------------------------------------
+# The base demo runs with MockProvider only. Each vendor SDK below is lazy-
+# imported and only needed if you select that provider via examples or the
+# multi-vendor eval harness. Install only what you need.
 anthropic>=0.40.0
+# google-generativeai>=0.7.0   # for compliance_gate.providers.GeminiProvider
+# openai>=1.30.0               # for compliance_gate.providers.OpenAIProvider
