@@ -3,7 +3,7 @@
 [![CI](https://github.com/bensonyangweb3/compliance-gate-pattern-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/bensonyangweb3/compliance-gate-pattern-demo/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Eval: 31/31](https://img.shields.io/badge/eval-31%2F31%20(100%25)-brightgreen.svg)](evals/RESULTS.md)
+[![Eval: 45/45](https://img.shields.io/badge/eval-45%2F45%20(100%25)-brightgreen.svg)](evals/RESULTS.md)
 
 A reference implementation of the **compliance-gate-first pattern** for
 LLM-augmented outreach and BD workflows.
@@ -79,7 +79,7 @@ flowchart TD
     C1 & C2 & C3 & C4 --> D[Reduce: REJECT > ESCALATE > PASS]
     D -->|PASS| E[Project minimal fields to Generation Layer]
     D -->|REJECT or ESCALATE| X[STOP — LLM never called]
-    E --> F[LLM Generation (Anthropic / mock)]
+    E --> F[LLM Generation - Anthropic / Gemini / OpenAI / mock]
     F --> G[Draft]
     D --> H[(Audit Log: SQLite + JSON-Schema)]
     G --> H
@@ -112,14 +112,20 @@ python -m examples.example_run
 # 2. Full end-to-end with LLM (mock provider, no API key needed):
 python -m examples.with_llm_generation
 
-# 3. Real Claude generation (requires ANTHROPIC_API_KEY):
+# 3. Real LLM generation (pick a vendor — env var supplies the key):
 export ANTHROPIC_API_KEY=sk-ant-...
 python -m examples.with_llm_generation --provider anthropic
+# or:  GEMINI_API_KEY=...   python -m examples.with_llm_generation --provider gemini
+# or:  OPENAI_API_KEY=sk-...  python -m examples.with_llm_generation --provider openai
 
-# 4. Run the evaluation suite (31 labeled cases):
+# 4. Run the evaluation suite (45 labeled cases — 31 baseline + 14 adversarial):
 python -m evals.run_eval
 
-# 5. Run unit tests:
+# 5. Multi-vendor eval harness (mock-only by default; opt into real APIs):
+python -m evals.run_llm_eval                       # mock only, free + offline
+python -m evals.run_llm_eval --providers mock,anthropic  # add real vendor
+
+# 6. Run unit tests:
 python -m pytest tests/ -v
 ```
 
@@ -130,13 +136,16 @@ SQLite browser to see the structured audit records.
 
 ## Eval results
 
-The eval suite runs 31 labeled synthetic cases covering happy paths,
-each rule's rejection / escalation paths, unicode & normalization edge
-cases, boundary conditions, multi-rule hits, and near-miss negatives.
+The eval suite runs 45 labeled synthetic cases (31 baseline + 14
+adversarial) covering happy paths, each rule's rejection / escalation
+paths, unicode & normalization edge cases, boundary conditions,
+multi-rule hits, near-miss negatives, and adversarial bypass attempts
+(zero-width-space evasion, full-width characters, cooldown
+field-shuffling, ID-collision bait, prompt-injection-shaped payloads).
 
 | Metric | Value |
 |---|---|
-| Total cases | 31 |
+| Total cases | 45 |
 | Accuracy | 100.0% |
 | Audit completeness | 100.0% |
 | PASS precision / recall | 100% / 100% |
@@ -167,15 +176,21 @@ compliance_gate/
   rules.py        Rule implementations (pure functions)
   audit.py        SQLite audit logger with JSON-Schema validation
   llm.py          Provider interface + Anthropic / mock implementations
+  providers.py    Gemini + OpenAI providers + get_provider() factory
+  feedback.py     Human-review log (ESCALATE outcomes, no auto-update)
   schemas.py      Python-side schema constants + loaders
 examples/
   example_run.py            Minimal demo — 4 candidates, no LLM
   with_llm_generation.py    End-to-end demo with LLM draft generation
+  production_stubs.py       OFAC fetch / CRM webhook / rate limiter stubs
   sample_config.yaml        Synthetic watchlist / conflict / alias data
 evals/
-  fixtures.py     31 labeled eval cases
+  fixtures.py     45 labeled eval cases (incl. 14 adversarial)
   run_eval.py     Eval harness with precision/recall/audit metrics
+  run_llm_eval.py Multi-vendor harness — verifies redaction per vendor
   RESULTS.md      Rendered eval report (regenerable)
+docs/
+  article_draft.md  Draft Medium / dev.to article on the pattern
 schema/
   audit_record.schema.json  JSON-Schema for every audit row
 tests/
